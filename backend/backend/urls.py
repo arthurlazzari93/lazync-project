@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from app.views import PlanoViewSet, ComissaoPlanoViewSet, ClienteViewSet, ConsultorViewSet, VendaViewSet, ControleRecebimentoViewSet, ExtratoPlataformaViewSet
+from app.views import PlanoViewSet, ComissaoPlanoViewSet, ClienteViewSet, ConsultorViewSet, VendaViewSet, ControleRecebimentoViewSet, ExtratoPlataformaViewSet, RegisterUserView
 
 router = DefaultRouter()
 router.register(r'planos', PlanoViewSet)
@@ -15,4 +15,5 @@ router.register(r'extratos-plataforma', ExtratoPlataformaViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),  # Incluindo as rotas da API
+    path('api/register/', RegisterUserView.as_view(), name='register'),
 ]

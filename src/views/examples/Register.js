@@ -1,22 +1,5 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.4
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
-// reactstrap components
+import { useState } from "react";
+import api from "api";  // Importe a API para fazer a requisição
 import {
   Button,
   Card,
@@ -33,6 +16,24 @@ import {
 } from "reactstrap";
 
 const Register = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.post("register/", {
+        username: name,
+        email: email,
+        password: password,
+      });
+      alert("Usuário registrado com sucesso");
+    } catch (error) {
+      console.error("Erro ao registrar usuário:", error);
+    }
+  };
+
   return (
     <>
       <Col lg="6" md="8">
@@ -52,8 +53,7 @@ const Register = () => {
                   <img
                     alt="..."
                     src={
-                      require("../../assets/img/icons/common/github.svg")
-                        .default
+                      require("../../assets/img/icons/common/github.svg").default
                     }
                   />
                 </span>
@@ -69,8 +69,7 @@ const Register = () => {
                   <img
                     alt="..."
                     src={
-                      require("../../assets/img/icons/common/google.svg")
-                        .default
+                      require("../../assets/img/icons/common/google.svg").default
                     }
                   />
                 </span>
@@ -82,7 +81,7 @@ const Register = () => {
             <div className="text-center text-muted mb-4">
               <small>Or sign up with credentials</small>
             </div>
-            <Form role="form">
+            <Form role="form" onSubmit={handleRegister}>
               <FormGroup>
                 <InputGroup className="input-group-alternative mb-3">
                   <InputGroupAddon addonType="prepend">
@@ -90,7 +89,12 @@ const Register = () => {
                       <i className="ni ni-hat-3" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input placeholder="Name" type="text" />
+                  <Input
+                    placeholder="Name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
                 </InputGroup>
               </FormGroup>
               <FormGroup>
@@ -104,6 +108,8 @@ const Register = () => {
                     placeholder="Email"
                     type="email"
                     autoComplete="new-email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -118,6 +124,8 @@ const Register = () => {
                     placeholder="Password"
                     type="password"
                     autoComplete="new-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -150,7 +158,7 @@ const Register = () => {
                 </Col>
               </Row>
               <div className="text-center">
-                <Button className="mt-4" color="primary" type="button">
+                <Button className="mt-4" color="primary" type="submit">
                   Create account
                 </Button>
               </div>
