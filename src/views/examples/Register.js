@@ -13,6 +13,7 @@ import {
   InputGroup,
   Row,
   Col,
+  
 } from "reactstrap";
 
 const Register = () => {
