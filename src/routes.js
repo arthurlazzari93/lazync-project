@@ -7,6 +7,8 @@ import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
 import Cadastros from "views/Cadastros.js";
+import CadastroPlanos from "views/CadastroPlanos";
+import CadastroComissoes from "views/CadastroComissoes";
 
 var routes = [
   {
@@ -58,14 +60,25 @@ var routes = [
     component: <Register />,
     layout: "/auth",
   },
-
   {
     path: "/cadastros",
     name: "Cadastros",
     icon: "ni ni-folder-17 text-green",  // Escolha um ícone apropriado
     component: <Cadastros />,            // Componente que vamos criar
     layout: "/admin",
-  }
+  },
+  {
+    path: "/cadastro-planos",
+    name: "Cadastro de Planos",
+    component: <CadastroPlanos />,
+    layout: "/admin",
+  },
+  {
+    path: "/cadastro-comissoes",
+    name: "Cadastro de Comissões",
+    component: <CadastroComissoes />,
+    layout: "/admin",
+  },
   
 ];
 export default routes;
