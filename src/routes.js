@@ -7,6 +7,7 @@ import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
 import ClientsList from 'views/ClientsList.js';
+import PlanosList from 'views/PlanosList.js';
 
 
 var routes = [
@@ -64,6 +65,13 @@ var routes = [
     name: "Clientes",
     icon: "ni ni-single-02 text-blue",  // Ícone de usuário
     component: <ClientsList />,
+    layout: "/admin",
+  },
+  {
+    path: "/planos",
+    name: "Planos",
+    icon: "ni ni-archive-2 text-blue",  // Escolha um ícone adequado
+    component: <PlanosList />,
     layout: "/admin",
   }
   
