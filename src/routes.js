@@ -6,11 +6,7 @@ import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
-import Cadastros from "views/Cadastros.js";
-import CadastroPlanos from "views/CadastroPlanos";
-import CadastroComissoes from "views/CadastroComissoes";
-import CadastroClientes from "views/CadastroClientes";
-import CadastroConsultores from "views/CadastroConsultores";
+
 
 var routes = [
   {
@@ -61,38 +57,7 @@ var routes = [
     icon: "ni ni-circle-08 text-pink",
     component: <Register />,
     layout: "/auth",
-  },
-  {
-    path: "/cadastros",
-    name: "Cadastros",
-    icon: "ni ni-folder-17 text-green",  // Escolha um ícone apropriado
-    component: <Cadastros />,            // Componente que vamos criar
-    layout: "/admin",
-  },
-  {
-    path: "/cadastro-planos",
-    name: "Cadastro de Planos",
-    component: <CadastroPlanos />,
-    layout: "/admin",
-  },
-  {
-    path: "/cadastro-comissoes",
-    name: "Cadastro de Comissões",
-    component: <CadastroComissoes />,
-    layout: "/admin",
-  },
-  {
-    path: "/cadastro-clientes",
-    name: "Cadastro de Clientes",
-    component: <CadastroClientes />,
-    layout: "/admin",
-  },
-  {
-    path: "/cadastro-consultores",
-    name: "Cadastro de Consultores",
-    component: <CadastroConsultores />,
-    layout: "/admin",
-  },
+  }
   
 ];
 export default routes;
