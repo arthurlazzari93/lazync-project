@@ -39,31 +39,81 @@ const PlanosList = () => {
   }, []);
 
   const handleSaveComissao = (planoId, parcela_numero, porcentagem_comissao) => {
-    
-    const data = {
-      plano: planoId,
-      parcela_numero,
-      porcentagem_comissao
-    };
-
-    axios.post('http://localhost:8000/api/comissoes-planos/', data)
+    // Verifica se a comissão já existe para a parcela específica
+    axios.get(`http://localhost:8000/api/comissoes-planos/?plano=${planoId}&parcela_numero=${parcela_numero}`)
       .then((response) => {
-        setComissoes({
-          ...comissoes,
-          [`${planoId}-${parcela_numero}`]: porcentagem_comissao
+        if (response.data.length > 0) {
+          // Se a comissão já existir, atualiza somente se for diferente
+          const comissaoId = response.data[0].id;
+          if (response.data[0].porcentagem_comissao !== porcentagem_comissao) {
+            axios.put(`http://localhost:8000/api/comissoes-planos/${comissaoId}/`, {
+              plano: planoId,
+              parcela_numero,
+              porcentagem_comissao
+            })
+            .then(() => {
+              console.log(`Parcela ${parcela_numero} do plano ${planoId} atualizada com sucesso.`);
+            })
+            .catch((error) => {
+              console.error(`Erro ao atualizar a parcela ${parcela_numero}:`, error);
+            });
+          }
+        } else {
+          // Cria uma nova comissão caso ela não exista
+          axios.post('http://localhost:8000/api/comissoes-planos/', {
+            plano: planoId,
+            parcela_numero,
+            porcentagem_comissao
+          })
+          .then(() => {
+            console.log(`Nova comissão criada para a parcela ${parcela_numero} do plano ${planoId}.`);
+          })
+          .catch((error) => {
+            console.error(`Erro ao criar nova comissão para a parcela ${parcela_numero}:`, error);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(`Erro ao verificar a comissão da parcela ${parcela_numero}:`, error);
+      });
+  };
+  
+  const handleSaveAllComissoes = (plano) => {
+    // Salva ou atualiza comissões para cada parcela individualmente
+    Array.from({ length: plano.parcelas_total }).forEach((_, i) => {
+      const parcela_numero = i + 1;
+      const porcentagem_comissao = comissoes[`${plano.id}-${parcela_numero}`] || '0';
+  
+      // Salvar ou atualizar comissão apenas da parcela atual
+      handleSaveComissao(plano.id, parcela_numero, porcentagem_comissao);
+    });
+  };
+  
+  // Função para carregar as comissões ao iniciar
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/planos/')
+      .then((response) => {
+        setPlanos(response.data);
+        // Carrega as comissões de todos os planos
+        response.data.forEach(plano => {
+          axios.get(`http://localhost:8000/api/comissoes-planos/?plano=${plano.id}`)
+            .then((comissoesResponse) => {
+              const comissoesMap = {};
+              comissoesResponse.data.forEach((comissao) => {
+                comissoesMap[`${plano.id}-${comissao.parcela_numero}`] = comissao.porcentagem_comissao;
+              });
+              setComissoes(prevComissoes => ({ ...prevComissoes, ...comissoesMap }));
+            });
         });
       })
       .catch((error) => {
-        console.error('Erro ao salvar comissão:', error);
+        console.error('Erro ao buscar planos', error);
       });
-  };
-
-  const handleInputChangeComissao = (planoId, parcela_numero, value) => {
-    setComissoes({
-      ...comissoes,
-      [`${planoId}-${parcela_numero}`]: value
-    });
-  };
+  }, []);
+  
+  
+  
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -73,6 +123,14 @@ const PlanosList = () => {
       setNewPlano({ ...newPlano, [name]: value });
     }
   };
+
+  const handleInputChangeComissao = (planoId, parcela_numero, value) => {
+    setComissoes({
+      ...comissoes,
+      [`${planoId}-${parcela_numero}`]: value
+    });
+  };
+  
 
   const handleNewPlano = () => {
     setSelectedPlano(null);
@@ -154,16 +212,14 @@ const PlanosList = () => {
                     <tr key={plano.id}>
                       <td>
                         <Button color="info" onClick={() => setSelectedPlano(plano)}>Modificar</Button>
-                        <Button
-                          color="success"
-                          onClick={() => {
-                            Array.from({ length: plano.parcelas_total }).forEach((_, i) => {
-                              handleSaveComissao(plano.id, i + 1, comissoes[`${plano.id}-${i + 1}`] || '0');
-                            });
-                          }}
-                        >
-                          Salvar Comissões
-                        </Button>
+
+<Button
+  color="success"
+  onClick={() => handleSaveAllComissoes(plano)}  // Agora chama a função handleSaveAllComissoes diretamente
+>
+  Salvar Comissões
+</Button>
+
                       </td>
                       <td>{plano.id}</td>
                       <td>{plano.nome_plano}</td>
