@@ -19,12 +19,24 @@ const PlanosList = () => {
     axios.get('http://localhost:8000/api/planos/')
       .then((response) => {
         setPlanos(response.data);
+  
+        // Carregar comissões para todos os planos
+        response.data.forEach(plano => {
+          axios.get(`http://localhost:8000/api/comissoes-planos/?plano=${plano.id}`)
+            .then((comissoesResponse) => {
+              const comissoesMap = {};
+              comissoesResponse.data.forEach((comissao) => {
+                comissoesMap[`${plano.id}-${comissao.parcela_numero}`] = comissao.porcentagem_comissao;
+              });
+              setComissoes(prevComissoes => ({ ...prevComissoes, ...comissoesMap }));
+            });
+        });
       })
       .catch((error) => {
         console.error('Erro ao buscar planos', error);
       });
   }, []);
-
+  
   const handleSaveComissao = (planoId, parcela_numero, porcentagem_comissao) => {
     const data = {
       plano: planoId,
@@ -155,20 +167,21 @@ const PlanosList = () => {
         <td>{plano.taxa_administrativa}</td>
         <td>{plano.parcelas_total}</td>
         {/* Renderiza os inputs de acordo com as parcelas do plano */}
-        {Array.from({ length: Math.max(...planos.map(plano => plano.parcelas_total)) }, (_, i) => (
-          <td key={i}>
-            {i + 1 <= plano.parcelas_total ? (
-              <Input
-                type="number"
-                value={comissoes[`${plano.id}-${i + 1}`] || ''}
-                onChange={(e) => handleInputChangeComissao(plano.id, i + 1, e.target.value)}
-                placeholder="%"
-              />
-            ) : (
-              '-'
-            )}
-          </td>
-        ))}
+        {Array.from({ length: plano.parcelas_total }, (_, i) => (
+  <td key={i}>
+    <Input
+      type="number"
+      value={comissoes[`${plano.id}-${i + 1}`] || ''}  // Exibe a porcentagem cadastrada
+      onChange={(e) => {
+        const value = e.target.value;
+        handleInputChangeComissao(plano.id, i + 1, value);  // Atualiza o estado
+        handleSaveComissao(plano.id, i + 1, value);  // Salva diretamente no banco
+      }}
+      placeholder="%"
+    />
+  </td>
+))}
+
       </tr>
     ))}
   </tbody>
