@@ -209,6 +209,8 @@ const PlanosList = () => {
           console.error('Erro ao cadastrar plano', error);
         });
     }
+
+    
   };
 
   return (
@@ -321,8 +323,8 @@ const PlanosList = () => {
                 {planos.map((plano) => (
                   <tr key={plano.id}>
                     <td>
-                      <Button color="info" onClick={() => setSelectedPlano(plano)}>Modificar</Button>
-                      <Button color="success" onClick={() => handleSaveAllComissoes(plano.id)}>Salvar Comissões</Button>
+                      <Button color="info" href="#pablo" onClick={() => setSelectedPlano(plano)} size="sm">Modificar</Button>
+                      <Button color="success" onClick={() => handleSaveAllComissoes(plano.id)} size="sm">Salvar Comissões</Button>
                     </td>
 
                     <td>{plano.nome_plano}</td>
