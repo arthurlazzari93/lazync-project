@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Tabela tb_Planos
 class Plano(models.Model):
     nome_plano = models.CharField(max_length=100)
@@ -15,6 +16,12 @@ class ComissaoPlano(models.Model):
     plano = models.ForeignKey(Plano, on_delete=models.CASCADE)
     parcela_numero = models.IntegerField()
     porcentagem_comissao = models.DecimalField(max_digits=5, decimal_places=2)
+
+    class Meta:
+        unique_together = ('plano', 'parcela_numero')  # Adiciona restrição de unicidade
+
+    def __str__(self):
+        return f"Plano: {self.plano.nome_plano}, Parcela: {self.parcela_numero}"
 
     def __str__(self):
         return f"Plano: {self.plano.nome_plano}, Parcela: {self.parcela_numero}"

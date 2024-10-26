@@ -16,20 +16,25 @@ const PlanosList = () => {
   });
 
   useEffect(() => {
+    // Carregar todos os planos
     axios.get('http://localhost:8000/api/planos/')
       .then((response) => {
         setPlanos(response.data);
   
-        // Carregar comissões para todos os planos
-        response.data.forEach(plano => {
+        // Carregar todas as comissões para cada plano
+        const comissoesMap = {};
+        response.data.forEach((plano) => {
           axios.get(`http://localhost:8000/api/comissoes-planos/?plano=${plano.id}`)
             .then((comissoesResponse) => {
-              const comissoesMap = {};
               comissoesResponse.data.forEach((comissao) => {
-                comissoesMap[`${plano.id}-${comissao.parcela_numero}`] = comissao.porcentagem_comissao;
+                comissoesMap[`${plano.id}-${comissao.parcela_numero}`] = {
+                  id: comissao.id,
+                  porcentagem_comissao: comissao.porcentagem_comissao
+                };
               });
               setComissoes(prevComissoes => ({ ...prevComissoes, ...comissoesMap }));
-            });
+            })
+            .catch(error => console.error('Erro ao carregar comissões:', error));
         });
       })
       .catch((error) => {
@@ -37,28 +42,116 @@ const PlanosList = () => {
       });
   }, []);
   
-  const handleSaveComissao = (planoId, parcela_numero, porcentagem_comissao) => {
-    const data = {
-      plano: planoId,
-      parcela_numero,
-      porcentagem_comissao
-    };
-
-    axios.post('http://localhost:8000/api/comissoes-planos/', data)
-      .then((response) => {
-        console.log('Comissão salva com sucesso:', response.data);
+  
+  
+  
+  const handleSaveComissao = (planoId, parcela_numero) => {
+    // Obtenha o valor da comissão para a parcela e plano específicos
+    const porcentagem_comissao = comissoes[`${planoId}-${parcela_numero}`]?.porcentagem_comissao || '0';
+  
+    // Verifique se existe uma comissão no estado para esta combinação
+    if (comissoes[`${planoId}-${parcela_numero}`]?.id) {
+      // Se já existe uma comissão para esta parcela do plano, faça uma atualização
+      const comissaoId = comissoes[`${planoId}-${parcela_numero}`].id;
+      axios.put(`http://localhost:8000/api/comissoes-planos/${comissaoId}/`, {
+        plano: planoId,
+        parcela_numero,
+        porcentagem_comissao
+      })
+      .then(() => {
+        console.log(`Parcela ${parcela_numero} do plano ${planoId} atualizada com sucesso.`);
       })
       .catch((error) => {
-        console.error('Erro ao salvar comissão:', error);
+        console.error(`Erro ao atualizar a parcela ${parcela_numero} do plano ${planoId}:`, error);
       });
+    } else {
+      // Crie uma nova comissão se não existir para a parcela e plano específicos
+      axios.post('http://localhost:8000/api/comissoes-planos/', {
+        plano: planoId,
+        parcela_numero,
+        porcentagem_comissao
+      })
+      .then((response) => {
+        console.log(`Nova comissão criada para a parcela ${parcela_numero} do plano ${planoId}.`);
+        // Atualize o estado com o ID retornado para evitar duplicações futuras
+        setComissoes(prevComissoes => ({
+          ...prevComissoes,
+          [`${planoId}-${parcela_numero}`]: {
+            id: response.data.id,
+            porcentagem_comissao: porcentagem_comissao
+          }
+        }));
+      })
+      .catch((error) => {
+        console.error(`Erro ao criar nova comissão para a parcela ${parcela_numero} do plano ${planoId}:`, error);
+      });
+    }
   };
+  
+  
+  
 
-  const handleInputChangeComissao = (planoId, parcela_numero, value) => {
-    setComissoes({
-      ...comissoes,
-      [`${planoId}-${parcela_numero}`]: value
+  const handleInputChangeComissao = (planoId, parcela_numero, porcentagem_comissao) => {
+    setComissoes(prevComissoes => ({
+      ...prevComissoes,
+      [`${planoId}-${parcela_numero}`]: {
+        ...prevComissoes[`${planoId}-${parcela_numero}`],
+        porcentagem_comissao: porcentagem_comissao
+      }
+    }));
+  };
+  
+  
+
+  const handleSaveAllComissoes = (planoId) => {
+    const totalParcelas = planos.find(plano => plano.id === planoId).parcelas_total;
+  
+    Array.from({ length: totalParcelas }).forEach((_, i) => {
+      const parcela_numero = i + 1;
+      const porcentagem_comissao = comissoes[`${planoId}-${parcela_numero}`]?.porcentagem_comissao || '0';
+  
+      if (comissoes[`${planoId}-${parcela_numero}`]?.id) {
+        // Atualiza a comissão existente
+        const comissaoId = comissoes[`${planoId}-${parcela_numero}`].id;
+        axios.put(`http://localhost:8000/api/comissoes-planos/${comissaoId}/`, {
+          plano: planoId,
+          parcela_numero,
+          porcentagem_comissao
+        })
+        .then(() => {
+          console.log(`Parcela ${parcela_numero} do plano ${planoId} atualizada com sucesso.`);
+        })
+        .catch((error) => {
+          console.error(`Erro ao atualizar a parcela ${parcela_numero} do plano ${planoId}:`, error);
+        });
+      } else {
+        // Cria uma nova comissão para a parcela do plano
+        axios.post('http://localhost:8000/api/comissoes-planos/', {
+          plano: planoId,
+          parcela_numero,
+          porcentagem_comissao
+        })
+        .then((response) => {
+          console.log(`Nova comissão criada para a parcela ${parcela_numero} do plano ${planoId}.`);
+          setComissoes(prevComissoes => ({
+            ...prevComissoes,
+            [`${planoId}-${parcela_numero}`]: {
+              id: response.data.id,
+              porcentagem_comissao: porcentagem_comissao
+            }
+          }));
+        })
+        .catch((error) => {
+          console.error(`Erro ao criar nova comissão para a parcela ${parcela_numero} do plano ${planoId}:`, error);
+        });
+      }
     });
   };
+  
+  
+  
+  
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -139,7 +232,6 @@ const PlanosList = () => {
       <th>Tipo do Plano</th>
       <th>Taxa Administrativa</th>
       <th>Total de Parcelas</th>
-      {/* Cria uma coluna para as parcelas baseado no primeiro plano */}
       {Array.from({ length: Math.max(...planos.map(plano => plano.parcelas_total)) }, (_, i) => (
         <th key={i}>Parcela {i + 1}</th>
       ))}
@@ -150,42 +242,29 @@ const PlanosList = () => {
       <tr key={plano.id}>
         <td>
           <Button color="info" onClick={() => setSelectedPlano(plano)}>Modificar</Button>
-          <Button
-            color="success"
-            onClick={() => {
-              Array.from({ length: plano.parcelas_total }).forEach((_, i) => {
-                handleSaveComissao(plano.id, i + 1, comissoes[`${plano.id}-${i + 1}`] || '0');
-              });
-            }}
-          >
-            Salvar Comissões
-          </Button>
+          <Button color="success" onClick={() => handleSaveAllComissoes(plano.id)}>Salvar Comissões</Button>
         </td>
         <td>{plano.id}</td>
         <td>{plano.nome_plano}</td>
         <td>{plano.tipo_plano}</td>
         <td>{plano.taxa_administrativa}</td>
         <td>{plano.parcelas_total}</td>
-        {/* Renderiza os inputs de acordo com as parcelas do plano */}
         {Array.from({ length: plano.parcelas_total }, (_, i) => (
-  <td key={i}>
-    <Input
+          <td key={i}>
+            <Input
       type="number"
-      value={comissoes[`${plano.id}-${i + 1}`] || ''}  // Exibe a porcentagem cadastrada
-      onChange={(e) => {
-        const value = e.target.value;
-        handleInputChangeComissao(plano.id, i + 1, value);  // Atualiza o estado
-        handleSaveComissao(plano.id, i + 1, value);  // Salva diretamente no banco
-      }}
+      value={comissoes[`${plano.id}-${i + 1}`]?.porcentagem_comissao || ''}
+      onChange={(e) => handleInputChangeComissao(plano.id, i + 1, e.target.value)}
+      onBlur={() => handleSaveComissao(plano.id, i + 1)}  // Salva somente a comissão do plano e parcela especificados
       placeholder="%"
-    />
-  </td>
-))}
-
+            />
+          </td>
+        ))}
       </tr>
     ))}
   </tbody>
 </Table>
+
 
             </Card>
           </Col>
