@@ -215,128 +215,138 @@ const PlanosList = () => {
     <>
       <Header />
       <Container className="mt--7" fluid>
+              {/* Linha do formulário de cadastro/edição de plano */}
+      <Row>
+      <Col>
+    <Card className="bg-secondary shadow mb-4">
+      <CardHeader className="border-0 d-flex justify-content-between align-items-center">
+        <h3 className="mb-0">{selectedPlano ? 'Editar Plano' : 'Cadastrar Novo Plano'}</h3>
+        {selectedPlano && (
+          <Button color="info" onClick={handleNewPlano}>Novo Plano</Button>
+        )}
+      </CardHeader>
+      <Form onSubmit={handleSavePlano} className="p-3">
         <Row>
-          {/* Coluna da lista de planos */}
-          <Col xl="8">
-            <Card className="bg-default shadow">
-              <CardHeader className="bg-transparent border-0">
-                <h3 className="text-white mb-0">Lista de Planos</h3>
-              </CardHeader>
-              <Table className="align-items-center table-dark table-flush" responsive>
-  <thead className="thead-dark">
-    <tr>
-      <th>Ações</th>
-      <th>ID</th>
-      <th>Nome do Plano</th>
-      <th>Tipo do Plano</th>
-      <th>Taxa Administrativa</th>
-      <th>Total de Parcelas</th>
-      {Array.from({ length: Math.max(...planos.map(plano => plano.parcelas_total)) }, (_, i) => (
-        <th key={i}>Parcela {i + 1}</th>
-      ))}
-    </tr>
-  </thead>
-  <tbody>
-    {planos.map((plano) => (
-      <tr key={plano.id}>
-        <td>
-          <Button color="info" onClick={() => setSelectedPlano(plano)}>Modificar</Button>
-          <Button color="success" onClick={() => handleSaveAllComissoes(plano.id)}>Salvar Comissões</Button>
-        </td>
-        <td>{plano.id}</td>
-        <td>{plano.nome_plano}</td>
-        <td>{plano.tipo_plano}</td>
-        <td>{plano.taxa_administrativa}</td>
-        <td>{plano.parcelas_total}</td>
-        {Array.from({ length: plano.parcelas_total }, (_, i) => (
-          <td key={i}>
+        <Col md="3">
+          <FormGroup>
+            <Label for="nome_plano">Nome do Plano</Label>
             <Input
-      type="number"
-      value={comissoes[`${plano.id}-${i + 1}`]?.porcentagem_comissao || ''}
-      onChange={(e) => handleInputChangeComissao(plano.id, i + 1, e.target.value)}
-      onBlur={() => handleSaveComissao(plano.id, i + 1)}  // Salva somente a comissão do plano e parcela especificados
-      placeholder="%"
+              type="text"
+              name="nome_plano"
+              id="nome_plano"
+              value={selectedPlano ? selectedPlano.nome_plano : newPlano.nome_plano}
+              onChange={handleInputChange}
+              placeholder="Nome do plano"
+              required
             />
-          </td>
-        ))}
-      </tr>
-    ))}
-  </tbody>
-</Table>
-
-
-            </Card>
-          </Col>
-
-          {/* Coluna do formulário de cadastro/edição de plano */}
-          <Col xl="4" className="mb-4">
-            <Card className="bg-secondary shadow">
-              <CardHeader className="border-0 d-flex justify-content-between align-items-center">
-                <h3 className="mb-0">{selectedPlano ? 'Editar Plano' : 'Cadastrar Novo Plano'}</h3>
-                {selectedPlano && (
-                  <Button color="info" onClick={handleNewPlano}>Novo Plano</Button>
-                )}
-              </CardHeader>
-              <Form onSubmit={handleSavePlano}>
-                <FormGroup>
-                  <Label for="nome_plano">Nome do Plano</Label>
-                  <Input
-                    type="text"
-                    name="nome_plano"
-                    id="nome_plano"
-                    value={selectedPlano ? selectedPlano.nome_plano : newPlano.nome_plano}
-                    onChange={handleInputChange}
-                    placeholder="Digite o nome do plano"
-                    required
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label for="tipo_plano">Tipo do Plano</Label>
-                  <Input
-                    type="text"
-                    name="tipo_plano"
-                    id="tipo_plano"
-                    value={selectedPlano ? selectedPlano.tipo_plano : newPlano.tipo_plano}
-                    onChange={handleInputChange}
-                    placeholder="Digite o tipo do plano (PME, PF, Adesão)"
-                    required
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label for="taxa_administrativa">Taxa Administrativa</Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    name="taxa_administrativa"
-                    id="taxa_administrativa"
-                    value={selectedPlano ? selectedPlano.taxa_administrativa : newPlano.taxa_administrativa}
-                    onChange={handleInputChange}
-                    placeholder="Digite a taxa administrativa"
-                    required
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label for="parcelas_total">Total de Parcelas</Label>
-                  <Input
-                    type="number"
-                    name="parcelas_total"
-                    id="parcelas_total"
-                    value={selectedPlano ? selectedPlano.parcelas_total : newPlano.parcelas_total}
-                    onChange={handleInputChange}
-                    placeholder="Digite o número total de parcelas"
-                    required
-                  />
-                </FormGroup>
-                <Button type="submit" color="primary">
-                  {selectedPlano ? 'Modificar' : 'Cadastrar'}
-                </Button>
-                {selectedPlano && (
-                  <Button color="danger" className="ml-2" onClick={() => handleDeletePlano(selectedPlano.id)}>Deletar</Button>
-                )}
-              </Form>
-            </Card>
-          </Col>
+          </FormGroup>
+        </Col>
+        <Col md="3">
+          <FormGroup>
+            <Label for="tipo_plano">Tipo do Plano</Label>
+            <Input
+              type="text"
+              name="tipo_plano"
+              id="tipo_plano"
+              value={selectedPlano ? selectedPlano.tipo_plano : newPlano.tipo_plano}
+              onChange={handleInputChange}
+              placeholder="Tipo do plano"
+              required
+            />
+          </FormGroup>
+        </Col>
+        <Col md="3">
+          <FormGroup>
+            <Label for="taxa_administrativa">Taxa Administrativa</Label>
+            <Input
+              type="number"
+              step="0.01"
+              name="taxa_administrativa"
+              id="taxa_administrativa"
+              value={selectedPlano ? selectedPlano.taxa_administrativa : newPlano.taxa_administrativa}
+              onChange={handleInputChange}
+              placeholder="Taxa administrativa"
+              required
+            />
+          </FormGroup>
+        </Col>
+        <Col md="3">
+          <FormGroup>
+            <Label for="parcelas_total">Total de Parcelas</Label>
+            <Input
+              type="number"
+              name="parcelas_total"
+              id="parcelas_total"
+              value={selectedPlano ? selectedPlano.parcelas_total : newPlano.parcelas_total}
+              onChange={handleInputChange}
+              placeholder="Total de parcelas"
+              required
+            />
+          </FormGroup>
+        </Col>
         </Row>
+        <Button type="submit" color="primary">
+          {selectedPlano ? 'Modificar' : 'Cadastrar'}
+        </Button>
+        {selectedPlano && (
+          <Button color="danger" className="ml-2" onClick={() => handleDeletePlano(selectedPlano.id)}>Deletar</Button>
+        )}
+      </Form>
+    </Card>
+  </Col>
+      </Row>
+
+      {/* Linha da tabela de lista de planos */}
+      <Row>
+        <Col>
+          <Card className="bg-default shadow">
+            <CardHeader className="bg-transparent border-0">
+              <h3 className="text-white mb-0">Lista de Planos</h3>
+            </CardHeader>
+            <Table className="align-items-center table-dark table-flush" responsive>
+              <thead className="thead-dark">
+                <tr>
+                  <th>Ações</th>
+
+                  <th>Nome do Plano</th>
+                  <th>Tipo do Plano</th>
+                  <th>Taxa Administrativa</th>
+
+                  {Array.from({ length: Math.max(...planos.map(plano => plano.parcelas_total)) }, (_, i) => (
+                    <th key={i}>Parcela {i + 1}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {planos.map((plano) => (
+                  <tr key={plano.id}>
+                    <td>
+                      <Button color="info" onClick={() => setSelectedPlano(plano)}>Modificar</Button>
+                      <Button color="success" onClick={() => handleSaveAllComissoes(plano.id)}>Salvar Comissões</Button>
+                    </td>
+
+                    <td>{plano.nome_plano}</td>
+                    <td>{plano.tipo_plano}</td>
+                    <td>{plano.taxa_administrativa}</td>
+
+                    {Array.from({ length: plano.parcelas_total }, (_, i) => (
+                      <td key={i}>
+                        <Input
+                          type="number"
+                          value={comissoes[`${plano.id}-${i + 1}`]?.porcentagem_comissao || ''}
+                          onChange={(e) => handleInputChangeComissao(plano.id, i + 1, e.target.value)}
+                          onBlur={() => handleSaveComissao(plano.id, i + 1)}
+                          placeholder="%"
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Card>
+        </Col>
+      </Row>
       </Container>
     </>
   );
