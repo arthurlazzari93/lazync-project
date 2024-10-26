@@ -16,31 +16,30 @@ const PlanosList = () => {
   });
 
   useEffect(() => {
-    // Carregar todos os planos
+    // Carregar todos os planos de uma vez
     axios.get('http://localhost:8000/api/planos/')
       .then((response) => {
         setPlanos(response.data);
-  
-        // Carregar todas as comissões para cada plano
-        const comissoesMap = {};
-        response.data.forEach((plano) => {
-          axios.get(`http://localhost:8000/api/comissoes-planos/?plano=${plano.id}`)
-            .then((comissoesResponse) => {
-              comissoesResponse.data.forEach((comissao) => {
-                comissoesMap[`${plano.id}-${comissao.parcela_numero}`] = {
-                  id: comissao.id,
-                  porcentagem_comissao: comissao.porcentagem_comissao
-                };
-              });
-              setComissoes(prevComissoes => ({ ...prevComissoes, ...comissoesMap }));
-            })
-            .catch(error => console.error('Erro ao carregar comissões:', error));
-        });
       })
       .catch((error) => {
         console.error('Erro ao buscar planos', error);
       });
+  
+    // Carregar todas as comissões de uma vez e organizar no estado
+    axios.get('http://localhost:8000/api/comissoes-planos/')
+      .then((comissoesResponse) => {
+        const comissoesMap = {};
+        comissoesResponse.data.forEach((comissao) => {
+          comissoesMap[`${comissao.plano}-${comissao.parcela_numero}`] = {
+            id: comissao.id,
+            porcentagem_comissao: comissao.porcentagem_comissao
+          };
+        });
+        setComissoes(comissoesMap);
+      })
+      .catch(error => console.error('Erro ao carregar comissões:', error));
   }, []);
+  
   
   
   
