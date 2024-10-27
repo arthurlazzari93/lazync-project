@@ -70,8 +70,9 @@ const Sidebar = (props) => {
   };
   // creates the links that appear in the left menu / Sidebar
   const createLinks = (routes) => {
-    return routes.map((prop, key) => {
-      return (
+    return routes
+      .filter((prop) => !prop.invisible) // Ignora rotas invisíveis
+      .map((prop, key) => (
         <NavItem key={key}>
           <NavLink
             to={prop.layout + prop.path}
@@ -82,9 +83,9 @@ const Sidebar = (props) => {
             {prop.name}
           </NavLink>
         </NavItem>
-      );
-    });
+      ));
   };
+  
 
   const { bgColor, routes, logo } = props;
   let navbarBrandProps;

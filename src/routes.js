@@ -10,13 +10,14 @@ import ClientsList from 'views/ClientsList.js';
 import PlanosList from 'views/PlanosList.js';
 import ConsultoresList from "views/ConsultoresList.js";
 import VendasList from "views/VendasList";
+import Profile from "views/examples/Profile.js";
 
 
 var routes = [
   {
     path: "/index",
     name: "Dashboard",
-    icon: "ni ni-tv-2 text-primary",
+    icon: "ni ni-chart-bar-32 text-blue",
     component: <Index />,
     layout: "/admin",
   },
@@ -27,20 +28,17 @@ var routes = [
     component: <Icons />,
     layout: "/admin",
   },
-
-
-
   {
     path: "/login",
     name: "Login",
-    icon: "ni ni-key-25 text-info",
+    icon: "ni ni-key-25 text-blue",
     component: <Login />,
     layout: "/auth",
   },
   {
     path: "/register",
     name: "Register",
-    icon: "ni ni-circle-08 text-pink",
+    icon: "ni ni-circle-08 text-blue",
     component: <Register />,
     layout: "/auth",
   },
@@ -61,17 +59,27 @@ var routes = [
   {
     path: "/consultores",
     name: "Consultores",
-    icon: "ni ni-single-02 text-yellow",
+    icon: "ni ni-badge text-blue",
     component: <ConsultoresList />,
     layout: "/admin",
   },
   {
     path: "/vendas",
     name: "Cadastro Vendas",
-    icon: "ni ni-single-02 text-yellow",
+    icon: "ni ni-single-02 text-blue",
     component: <VendasList />,
     layout: "/admin",
+  },
+  {
+    path: "/user-profile",
+    name: "User Profile",
+    icon: "ni ni-single-02 text-yellow",
+    component: <Profile />,
+    layout: "/admin",
+    invisible: true,
+    
   }
+  
 
   
 ];
