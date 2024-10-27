@@ -93,14 +93,14 @@ const ClientsList = () => {
               <Table className="align-items-center table-dark table-flush" responsive>
                 <thead className="thead-dark">
                   <tr>
-                    <th>ID</th>
+
                     <th>Nome do Cliente</th>
                   </tr>
                 </thead>
                 <tbody>
                   {clients.map((client) => (
                     <tr key={client.id} onClick={() => handleSelectClient(client)}>
-                      <td>{client.id}</td>
+
                       <td>{client.nome_cliente}</td>
                     </tr>
                   ))}
