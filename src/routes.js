@@ -9,6 +9,7 @@ import Icons from "views/examples/Icons.js";
 import ClientsList from 'views/ClientsList.js';
 import PlanosList from 'views/PlanosList.js';
 import ConsultoresList from "views/ConsultoresList.js";
+import VendasList from "views/VendasList";
 
 
 var routes = [
@@ -80,6 +81,13 @@ var routes = [
     name: "Consultores",
     icon: "ni ni-single-02 text-yellow",
     component: <ConsultoresList />,
+    layout: "/admin",
+  },
+  {
+    path: "/vendas",
+    name: "Cadastro Vendas",
+    icon: "ni ni-single-02 text-yellow",
+    component: <VendasList />,
     layout: "/admin",
   }
 
