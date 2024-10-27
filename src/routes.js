@@ -8,6 +8,7 @@ import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
 import ClientsList from 'views/ClientsList.js';
 import PlanosList from 'views/PlanosList.js';
+import ConsultoresList from "views/ConsultoresList.js";
 
 
 var routes = [
@@ -73,7 +74,15 @@ var routes = [
     icon: "ni ni-archive-2 text-blue",  // Escolha um ícone adequado
     component: <PlanosList />,
     layout: "/admin",
+  },
+  {
+    path: "/consultores",
+    name: "Consultores",
+    icon: "ni ni-single-02 text-yellow",
+    component: <ConsultoresList />,
+    layout: "/admin",
   }
+
   
 ];
 export default routes;
