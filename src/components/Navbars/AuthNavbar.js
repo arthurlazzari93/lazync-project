@@ -21,7 +21,7 @@ const AdminNavbar = () => {
           <NavbarBrand to="/" tag={Link}>
             <img
               alt="..."
-              src={require("../../assets/img/brand/logo_lazzariseguros.png")}
+              src={require("../../assets/img/brand/lazync.semfundo.png")}
               style={{ width: "200px", height: "auto" }}
             />
           </NavbarBrand>
@@ -35,8 +35,7 @@ const AdminNavbar = () => {
                   <Link to="/">
                     <img
                       alt="..."
-                      src={require("../../assets/img/brand/logo_lazzariseguros.png")}
-                      style={{ width: "150px", height: "auto" }}
+                      src={require("../../assets/img/brand/argon-react.png")}
                     />
                   </Link>
                 </Col>
