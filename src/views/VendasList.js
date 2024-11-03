@@ -131,21 +131,23 @@ const VendasList = () => {
               <Table className="align-items-center table-dark table-flush" responsive>
                 <thead className="thead-dark">
                   <tr>
-                    <th>ID</th>
+
                     <th>Cliente</th>
                     <th>Plano</th>
                     <th>Consultor</th>
                     <th>Valor Real</th>
+                    <th>Data Vigencia</th>
                   </tr>
                 </thead>
                 <tbody>
                   {vendas.map(venda => (
                     <tr key={venda.id} onClick={() => handleSelectVenda(venda)}>
-                      <td>{venda.id}</td>
-                      <td>{venda.cliente}</td>
-                      <td>{venda.plano}</td>
-                      <td>{venda.consultor}</td>
+
+                      <td>{venda.cliente.nome_cliente}</td> {/* Exibe o nome do cliente */}
+                      <td>{venda.plano.nome_plano}</td>     {/* Exibe o nome do plano */}
+                      <td>{venda.consultor.nome_consultor}</td> {/* Exibe o nome do consultor */}
                       <td>{venda.valor_real}</td>
+                      <td>{venda.data_vigencia}</td>
                     </tr>
                   ))}
                 </tbody>
