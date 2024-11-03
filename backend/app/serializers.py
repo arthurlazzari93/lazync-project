@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 class PlanoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plano
-        fields = ['id', 'nome_plano']
+        fields = '__all__'
 
 class ComissaoPlanoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,25 +30,17 @@ class ComissaoPlanoSerializer(serializers.ModelSerializer):
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
-        fields = ['id', 'nome_cliente']
+        fields = '__all__'
 
 class ConsultorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consultor
-        fields = ['id', 'nome_consultor']
+        fields = '__all__'
 
 class VendaSerializer(serializers.ModelSerializer):
-    data_venda = serializers.DateField(input_formats=['%Y-%m-%d', '%d/%m/%Y'])
-    data_vigencia = serializers.DateField(input_formats=['%Y-%m-%d', '%d/%m/%Y'])
-    data_vencimento = serializers.DateField(input_formats=['%Y-%m-%d', '%d/%m/%Y'])
-
     class Meta:
         model = Venda
-        fields = [
-            'cliente', 'plano', 'consultor', 'numero_proposta', 
-            'valor_plano', 'data_venda', 'data_vigencia', 
-            'data_vencimento', 'desconto', 'taxa', 'valor_real'
-        ]
+        fields = '__all__'
 
 class ControleRecebimentoSerializer(serializers.ModelSerializer):
     class Meta:
