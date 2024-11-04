@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { Table, Container, Row, Card, CardHeader, Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import Header from 'components/Headers/Header';
@@ -117,6 +117,28 @@ const VendasList = () => {
     }
   };
 
+  // Criar mapas para acessos rápidos
+  const clientesMap = useMemo(() => {
+    return clientes.reduce((map, cliente) => {
+      map[cliente.id] = cliente.nome_cliente;
+      return map;
+    }, {});
+  }, [clientes]);
+
+  const planosMap = useMemo(() => {
+    return planos.reduce((map, plano) => {
+      map[plano.id] = plano.nome_plano;
+      return map;
+    }, {});
+  }, [planos]);
+
+  const consultoresMap = useMemo(() => {
+    return consultores.reduce((map, consultor) => {
+      map[consultor.id] = consultor.nome_consultor;
+      return map;
+    }, {});
+  }, [consultores]);
+
   return (
     <>
       <Header />
@@ -142,9 +164,9 @@ const VendasList = () => {
                   {vendas.map(venda => (
                     <tr key={venda.id} onClick={() => handleSelectVenda(venda)}>
                       <td>{venda.id}</td>
-                      <td>{venda.cliente}</td>
-                      <td>{venda.plano}</td>
-                      <td>{venda.consultor}</td>
+                      <td>{clientesMap[venda.cliente] || venda.cliente}</td>
+                      <td>{planosMap[venda.plano] || venda.plano}</td>
+                      <td>{consultoresMap[venda.consultor] || venda.consultor}</td>
                       <td>{venda.valor_real}</td>
                     </tr>
                   ))}
