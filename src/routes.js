@@ -11,7 +11,7 @@ import PlanosList from 'views/PlanosList.js';
 import ConsultoresList from "views/ConsultoresList.js";
 import VendasList from "views/VendasList";
 import Profile from "views/examples/Profile.js";
-
+import ControleList from "views/ControleList.js";
 
 var routes = [
   {
@@ -78,6 +78,13 @@ var routes = [
     layout: "/admin",
     invisible: true,
     
+  },
+  {
+    path: "/controle-recebimento",
+    name: "Controle de Recebimento",
+    icon: "ni ni-money-coins text-green",
+    component: <ControleList />,
+    layout: "/admin",
   }
   
 
